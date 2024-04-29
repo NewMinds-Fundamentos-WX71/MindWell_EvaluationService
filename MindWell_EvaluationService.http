@@ -1,0 +1,6 @@
+@MindWell_EvaluationService_HostAddress = http://localhost:5143
+
+GET {{MindWell_EvaluationService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
