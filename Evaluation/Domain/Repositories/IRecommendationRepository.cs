@@ -6,7 +6,5 @@ public interface IRecommendationRepository
 {
     Task<IEnumerable<Recommendation>> ListAsync();
     Task<Recommendation> FindByIdAsync(int id);
-    Task AddAsync(Recommendation recommendation);
-    void Update(Recommendation recommendation);
-    void Remove(Recommendation recommendation);
+    Task<IEnumerable<Recommendation>> FindAllByDiagnosisIdAsync(int id);
 }

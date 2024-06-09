@@ -6,7 +6,5 @@ public interface IQuestionRepository
 {
     Task<IEnumerable<Question>> ListAsync();
     Task<Question> FindByIdAsync(int id);
-    Task AddAsync(Question question);
-    void Update(Question question);
-    void Remove(Question question);
+    Task<IEnumerable<Question>> FindByTestIdAsync(int id);
 }

@@ -12,28 +12,28 @@ public class DiagnoseRepository : BaseRepository, IDiagnoseRepository
     {
     }
 
-    public async Task<IEnumerable<Diagnose>> ListAsync()
+    public async Task<IEnumerable<Diagnosis>> ListAsync()
     {
-        return await _context.Diagnoses.ToListAsync();
+        return await _context.Diagnosis.ToListAsync();
     }
 
-    public async Task<Diagnose> FindByIdAsync(int id)
+    public async Task<Diagnosis> FindByIdAsync(int id)
     {
-        return await _context.Diagnoses.FindAsync(id);
+        return await _context.Diagnosis.FindAsync(id);
     }
 
-    public async Task AddAsync(Diagnose diagnose)
+    public async Task AddAsync(Diagnosis diagnosis)
     {
-        await _context.Diagnoses.AddAsync(diagnose);
+        await _context.Diagnosis.AddAsync(diagnosis);
     }
 
-    public void Update(Diagnose diagnose)
+    public void Update(Diagnosis diagnosis)
     {
-        _context.Update(diagnose);
+        _context.Update(diagnosis);
     }
 
-    public void Remove(Diagnose diagnose)
+    public void Remove(Diagnosis diagnosis)
     {
-        _context.Diagnoses.Remove(diagnose);
+        _context.Diagnosis.Remove(diagnosis);
     }
 }

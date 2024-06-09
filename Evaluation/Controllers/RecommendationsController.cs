@@ -39,50 +39,30 @@ public class RecommendationsController : ControllerBase
         return resource;
     }
     
-    [HttpPost]
-    public async Task<IActionResult> PostAsync([FromBody] SaveRecommendationResource resource)
+    [HttpGet("diagnosis/{id:int}")]
+    public async Task<IEnumerable<RecommendationResource>> GetAllRecommendationsByDiagnosisId(int id)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState.GetErrorMessages());
-
-        var recommendation = _mapper.Map<SaveRecommendationResource, Recommendation>(resource);
-        var result = await _recommendationService.SaveAsync(recommendation);
-
-        if (!result.Success)
-            return BadRequest(result.Message);
-
-        var recommendationResource = _mapper.Map<Recommendation, RecommendationResource>(result.Resource);
-
-        return Ok(recommendationResource);
+        var recommendation = await _recommendationService.ListByDiagnosisIdAsync(id);
+        var resource = _mapper.Map<IEnumerable<Recommendation>, IEnumerable<RecommendationResource>>(recommendation);
+        
+        return resource;
     }
     
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync(int id, [FromBody] SaveRecommendationResource resource)
+    [HttpGet("depression-test/{score:int}")]
+    public async Task<IEnumerable<RecommendationResource>> GetAllDepressionRecommendationsByTestScore(int score)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState.GetErrorMessages());
-
-        var recommendation = _mapper.Map<SaveRecommendationResource, Recommendation>(resource);
-        var result = await _recommendationService.UpdateAsync(id, recommendation);
-
-        if (!result.Success)
-            return BadRequest(result.Message);
-
-        var recommendationResource = _mapper.Map<Recommendation, RecommendationResource>(result.Resource);
-
-        return Ok(recommendationResource);
+        var recommendation = await _recommendationService.ListDepressionRecommendationsByTestScoreAsync(score);
+        var resource = _mapper.Map<IEnumerable<Recommendation>, IEnumerable<RecommendationResource>>(recommendation);
+        
+        return resource;
     }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAsync(int id)
+    
+    [HttpGet("anxiety-test/{score:int}")]
+    public async Task<IEnumerable<RecommendationResource>> GetAllAnxietyRecommendationsByTestScore(int score)
     {
-        var result = await _recommendationService.DeleteAsync(id);
-
-        if (!result.Success)
-            return BadRequest(result.Message);
-
-        var recommendationResource = _mapper.Map<Recommendation, RecommendationResource>(result.Resource);
-
-        return Ok(recommendationResource);
+        var recommendation = await _recommendationService.ListAnxietyRecommendationsByTestScoreAsync(score);
+        var resource = _mapper.Map<IEnumerable<Recommendation>, IEnumerable<RecommendationResource>>(recommendation);
+        
+        return resource;
     }
 }

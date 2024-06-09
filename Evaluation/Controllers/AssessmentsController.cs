@@ -4,6 +4,7 @@ using MindWell_EvaluationService.Evaluation.Domain.Models;
 using MindWell_EvaluationService.Evaluation.Domain.Services;
 using MindWell_EvaluationService.Evaluation.Resources.GET;
 using MindWell_EvaluationService.Evaluation.Resources.POST;
+using MindWell_EvaluationService.Evaluation.Resources.UPDATE;
 using MindWell_EvaluationService.Shared.Extensions;
 
 namespace MindWell_EvaluationService.Evaluation.Controllers;
@@ -56,13 +57,45 @@ public class AssessmentsController : ControllerBase
         return Ok(assessmentResource);
     }
     
+    [HttpPost("calc-anxiety")]
+    public async Task<IActionResult> CalculateAnxietyDiagnosis([FromBody] CalculateAssessmentDiagnosis resource)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState.GetErrorMessages());
+        
+        var result = await _assessmentService.CalculateAnxietyDiagnosis(resource.Assessment_Id, resource.Answers);
+        
+        if (!result.Success)
+            return BadRequest(result.Message);
+        
+        var resourceResource = _mapper.Map<Assessment, AssessmentResource>(result.Resource);
+        
+        return Ok(resourceResource);
+    }
+
+    [HttpPost("calc-depression")]
+    public async Task<IActionResult> CalculateDepressionDiagnosis([FromBody] CalculateAssessmentDiagnosis resource)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState.GetErrorMessages());
+        
+        var result = await _assessmentService.CalculateDepressionDiagnosis(resource.Assessment_Id, resource.Answers);
+        
+        if (!result.Success)
+            return BadRequest(result.Message);
+        
+        var resourceResource = _mapper.Map<Assessment, AssessmentResource>(result.Resource);
+        
+        return Ok(resourceResource);
+    }
+    
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync(int id, [FromBody] SaveAssessmentResource resource)
+    public async Task<IActionResult> PutAsync(int id, [FromBody] UpdateAssessmentResource resource)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState.GetErrorMessages());
 
-        var assessment = _mapper.Map<SaveAssessmentResource, Assessment>(resource);
+        var assessment = _mapper.Map<UpdateAssessmentResource, Assessment>(resource);
         var result = await _assessmentService.UpdateAsync(id, assessment);
 
         if (!result.Success)

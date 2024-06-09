@@ -22,18 +22,10 @@ public class QuestionRepository : BaseRepository, IQuestionRepository
         return await _context.Questions.FindAsync(id);
     }
 
-    public async Task AddAsync(Question question)
+    public async Task<IEnumerable<Question>> FindByTestIdAsync(int id)
     {
-        await _context.Questions.AddAsync(question);
-    }
-
-    public void Update(Question question)
-    {
-        _context.Update(question);
-    }
-
-    public void Remove(Question question)
-    {
-        _context.Questions.Remove(question);
+        return await _context.Questions
+            .Where(q => q.Test_Id == id)
+            .ToListAsync();
     }
 }

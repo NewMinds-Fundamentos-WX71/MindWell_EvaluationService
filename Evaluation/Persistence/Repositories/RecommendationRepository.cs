@@ -22,18 +22,10 @@ public class RecommendationRepository : BaseRepository, IRecommendationRepositor
         return await _context.Recommendations.FindAsync(id);
     }
 
-    public async Task AddAsync(Recommendation recommendation)
+    public async Task<IEnumerable<Recommendation>> FindAllByDiagnosisIdAsync(int id)
     {
-        await _context.Recommendations.AddAsync(recommendation);
-    }
-
-    public void Update(Recommendation recommendation)
-    {
-        _context.Update(recommendation);
-    }
-
-    public void Remove(Recommendation recommendation)
-    {
-        _context.Recommendations.Remove(recommendation);
+        return await _context.Recommendations
+            .Where(r => r.Diagnosis_Id == id)
+            .ToListAsync();
     }
 }

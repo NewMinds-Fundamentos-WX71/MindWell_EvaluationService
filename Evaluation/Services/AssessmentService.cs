@@ -9,12 +9,16 @@ namespace MindWell_EvaluationService.Evaluation.Services;
 public class AssessmentService : IAssessmentService
 {
     private readonly IAssessmentRepository _assessmentRepository;
+    private readonly IAssessmentRecommendationRepository _assessmentRecommendationRepository;
+    private readonly IRecommendationRepository _recommendationRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public AssessmentService(IAssessmentRepository assessmentRepository, IUnitOfWork unitOfWork)
+    public AssessmentService(IAssessmentRepository assessmentRepository, IUnitOfWork unitOfWork, IAssessmentRecommendationRepository assessmentRecommendationRepository, IRecommendationRepository recommendationRepository)
     {
         _assessmentRepository = assessmentRepository;
         _unitOfWork = unitOfWork;
+        _assessmentRecommendationRepository = assessmentRecommendationRepository;
+        _recommendationRepository = recommendationRepository;
     }
 
     public async Task<IEnumerable<Assessment>> ListAsync()
@@ -31,6 +35,8 @@ public class AssessmentService : IAssessmentService
     {
         try
         {
+            assessment.Diagnosis_Id = 10;
+            
             await _assessmentRepository.AddAsync(assessment);
             await _unitOfWork.CompleteAsync();
             return new AssessmentResponse(assessment);
@@ -38,6 +44,87 @@ public class AssessmentService : IAssessmentService
         catch (Exception e)
         {
             return new AssessmentResponse($"An error occurred while saving the assessment: {e.Message}");
+        }
+    }
+    
+    public async Task<AssessmentResponse> CalculateAnxietyDiagnosis(int id, IEnumerable<int> answers)
+    {
+        try
+        {
+            var existingAssessment = await _assessmentRepository.FindByIdAsync(id);
+            
+            if (existingAssessment == null)
+                return new AssessmentResponse("Assessment not found.");
+            
+            var result = answers.Sum();
+
+            var diagnosisId = result switch
+            {
+                <= 7 => 6,
+                <= 15 => 7,
+                <= 25 => 8,
+                <= 63 => 9,
+                _ => 10
+            };
+            
+            existingAssessment.Diagnosis_Id = diagnosisId;
+            
+            _assessmentRepository.Update(existingAssessment);
+            await _unitOfWork.CompleteAsync();
+
+            var recommendations = await _recommendationRepository.FindAllByDiagnosisIdAsync(diagnosisId);
+            
+            // Crea un registro en AssessmentRecommendation para cada recomendación
+            foreach (var recommendation in recommendations)
+            {
+                var assessmentRecommendation = new AssessmentRecommendation
+                {
+                    Assessment_Id = existingAssessment.Id,
+                    Recommendation_Id = recommendation.Id
+                };
+
+                await _assessmentRecommendationRepository.AddAsync(assessmentRecommendation);
+            }
+            
+            await _unitOfWork.CompleteAsync();
+            return new AssessmentResponse(existingAssessment);
+        }
+        catch (Exception e)
+        {
+            return new AssessmentResponse("An error occurred while calculating the anxiety diagnosis of the assessment: " + e.Message);
+        }
+    }
+
+    public async Task<AssessmentResponse> CalculateDepressionDiagnosis(int id, IEnumerable<int> answers)
+    {
+        try
+        {
+            var existingAssessment = await _assessmentRepository.FindByIdAsync(id);
+            
+            if (existingAssessment == null)
+                return new AssessmentResponse("Assessment not found.");
+            
+            var result = answers.Sum();
+            
+            var diagnose = result switch
+            {
+                <= 4 => 1,
+                <= 9 => 2,
+                <= 14 => 3,
+                <= 19 => 4,
+                <= 27 => 5,
+                _ => 10
+            };
+            
+            existingAssessment.Diagnosis_Id = diagnose;
+            
+            _assessmentRepository.Update(existingAssessment);
+            await _unitOfWork.CompleteAsync();
+            return new AssessmentResponse(existingAssessment);
+        }
+        catch (Exception e)
+        {
+            return new AssessmentResponse("An error occurred while calculating the depression diagnosis of the assessment: " + e.Message);
         }
     }
 
@@ -50,7 +137,7 @@ public class AssessmentService : IAssessmentService
             if (existingAssessment == null)
                 return new AssessmentResponse("Assessment not found.");
 
-            existingAssessment.Date = assessment.Date;
+            existingAssessment.Diagnosis_Id = assessment.Diagnosis_Id;
 
             _assessmentRepository.Update(existingAssessment);
             await _unitOfWork.CompleteAsync();

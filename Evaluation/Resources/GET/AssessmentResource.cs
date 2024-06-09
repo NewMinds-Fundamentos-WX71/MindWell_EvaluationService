@@ -6,5 +6,5 @@ public class AssessmentResource
     public DateTime Date { get; set; }
     public int User_Id { get; set; }
 
-    public int Diagnose_Id { get; set; }
+    public int Diagnosis_Id { get; set; }
 }

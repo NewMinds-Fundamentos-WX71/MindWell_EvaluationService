@@ -19,7 +19,7 @@ builder.Services.AddSwaggerGen();
 
 // Add Database Connection
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString)
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString)
     .LogTo(Console.WriteLine, LogLevel.Information)
     .EnableSensitiveDataLogging()
     .EnableDetailedErrors());
@@ -30,14 +30,18 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 // Dependency injection
 builder.Services.AddScoped<IAssessmentRepository, AssessmentRepository>();
 builder.Services.AddScoped<IAssessmentService, AssessmentService>();
-builder.Services.AddScoped<IAssessmentQuestionRepository, AssessmentQuestionRepository>();
-builder.Services.AddScoped<IAssessmentQuestionService, AssessmentQuestionService>();
+builder.Services.AddScoped<IAssessmentRecommendationRepository, AssessmentRecommendationRepository>();
+builder.Services.AddScoped<IAssessmentRecommendationService, AssessmentRecommendationService>();
 builder.Services.AddScoped<IDiagnoseRepository, DiagnoseRepository>();
 builder.Services.AddScoped<IDiagnoseService, DiagnoseService>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<IRecommendationRepository, RecommendationRepository>();
 builder.Services.AddScoped<IRecommendationService, RecommendationService>();
+builder.Services.AddScoped<ITestRepository, TestRepository>();
+builder.Services.AddScoped<ITestService, TestService>();
+builder.Services.AddScoped<ITreatmentRepository, TreatmentRepository>();
+builder.Services.AddScoped<ITreatmentService, TreatmentService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // AutoMapper Configuration
@@ -54,12 +58,21 @@ using (var context = scope.ServiceProvider.GetService<AppDbContext>())
     context.Database.EnsureCreated();
 }
 
+/*// NO MOSTRAR SWAGGER EN PRODUCCION
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+}*/
+
+// MOSTRAR SWAGGER EN PRODUCCION
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    c.RoutePrefix = string.Empty; // Serve Swagger at the app's root
+});
 
 app.UseHttpsRedirection();
 

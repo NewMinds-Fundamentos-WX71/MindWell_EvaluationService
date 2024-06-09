@@ -27,57 +27,8 @@ public class QuestionService : IQuestionService
         return await _questionRepository.FindByIdAsync(id);
     }
 
-    public async Task<QuestionResponse> SaveAsync(Question question)
+    public async Task<IEnumerable<Question>> ListByTestIdAsync(int id)
     {
-        try
-        {
-            await _questionRepository.AddAsync(question);
-            await _unitOfWork.CompleteAsync();
-            return new QuestionResponse(question);
-        }
-        catch (Exception e)
-        {
-            return new QuestionResponse($"An error occurred while saving the question: {e.Message}");
-        }
-    }
-
-    public async Task<QuestionResponse> UpdateAsync(int id, Question question)
-    {
-        try
-        {
-            var existingQuestion = await _questionRepository.FindByIdAsync(id);
-
-            if (existingQuestion == null)
-                return new QuestionResponse("Question not found.");
-
-            existingQuestion.Text = question.Text;
-
-            _questionRepository.Update(existingQuestion);
-            await _unitOfWork.CompleteAsync();
-            return new QuestionResponse(existingQuestion);
-        }
-        catch (Exception e)
-        {
-            return new QuestionResponse($"An error occurred while updating the question: {e.Message}");
-        }
-    }
-
-    public async Task<QuestionResponse> DeleteAsync(int id)
-    {
-        try
-        {
-            var existingQuestion = await _questionRepository.FindByIdAsync(id);
-
-            if (existingQuestion == null)
-                return new QuestionResponse("Question not found.");
-
-            _questionRepository.Remove(existingQuestion);
-            await _unitOfWork.CompleteAsync();
-            return new QuestionResponse(existingQuestion);
-        }
-        catch (Exception e)
-        {
-            return new QuestionResponse($"An error occurred while deleting the question: {e.Message}");
-        }
+        return await _questionRepository.FindByTestIdAsync(id);
     }
 }

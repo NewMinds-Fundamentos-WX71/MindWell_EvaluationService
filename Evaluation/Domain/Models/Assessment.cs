@@ -6,7 +6,8 @@ public class Assessment
     public DateTime Date { get; set; }
     public int User_Id { get; set; }
     
-    public int Diagnose_Id { get; set; }
-    public Diagnose Diagnose { get; set; }
-    public IList<AssessmentQuestion> AssessmentQuestions { get; set; }
+    public int Diagnosis_Id { get; set; }
+    public Diagnosis Diagnosis { get; set; }
+    public List<AssessmentRecommendation> AssessmentRecommendations { get; set; }
+    public Treatment Treatment { get; set; }
 }

@@ -7,7 +7,5 @@ public interface IQuestionService
 {
     Task<IEnumerable<Question>> ListAsync();
     Task<Question> GetByIdAsync(int id);
-    Task<QuestionResponse> SaveAsync(Question question);
-    Task<QuestionResponse> UpdateAsync(int id, Question question);
-    Task<QuestionResponse> DeleteAsync(int id);
+    Task<IEnumerable<Question>> ListByTestIdAsync(int id);
 }

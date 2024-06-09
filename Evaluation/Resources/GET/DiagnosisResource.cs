@@ -1,7 +1,7 @@
 ﻿namespace MindWell_EvaluationService.Evaluation.Resources.GET;
 
-public class DiagnoseResource
+public class DiagnosisResource
 {
     public int Id { get; set; }
-    public string Result { get; set; }
+    public string Name { get; set; }
 }

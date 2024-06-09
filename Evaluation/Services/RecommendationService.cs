@@ -27,59 +27,33 @@ public class RecommendationService : IRecommendationService
         return await _recommendationRepository.FindByIdAsync(id);
     }
 
-    public async Task<RecommendationResponse> SaveAsync(Recommendation recommendation)
+    public async Task<IEnumerable<Recommendation>> ListByDiagnosisIdAsync(int id)
     {
-        try
-        {
-            await _recommendationRepository.AddAsync(recommendation);
-            await _unitOfWork.CompleteAsync();
-            return new RecommendationResponse(recommendation);
-        }
-        catch (Exception e)
-        {
-            return new RecommendationResponse($"An error occurred while saving the recommendation: {e.Message}");
-        }
+        return await _recommendationRepository.FindAllByDiagnosisIdAsync(id);
     }
 
-    public async Task<RecommendationResponse> UpdateAsync(int id, Recommendation recommendation)
+    public async Task<IEnumerable<Recommendation>> ListDepressionRecommendationsByTestScoreAsync(int score)
     {
-        try
+        return score switch
         {
-            var existingRecommendation = await _recommendationRepository.FindByIdAsync(id);
-
-            if (existingRecommendation == null)
-                return new RecommendationResponse("Recommendation not found.");
-
-            existingRecommendation.Frecuency = recommendation.Frecuency;
-            existingRecommendation.Category = recommendation.Category;
-            existingRecommendation.Details = recommendation.Details;
-
-            _recommendationRepository.Update(existingRecommendation);
-            await _unitOfWork.CompleteAsync();
-            return new RecommendationResponse(existingRecommendation);
-        }
-        catch (Exception e)
-        {
-            return new RecommendationResponse($"An error occurred while updating the recommendation: {e.Message}");
-        }
+            <= 4 => await _recommendationRepository.FindAllByDiagnosisIdAsync(1),
+            <= 9 => await _recommendationRepository.FindAllByDiagnosisIdAsync(2),
+            <= 14 => await _recommendationRepository.FindAllByDiagnosisIdAsync(3),
+            <= 19 => await _recommendationRepository.FindAllByDiagnosisIdAsync(4),
+            <= 27 => await _recommendationRepository.FindAllByDiagnosisIdAsync(5),
+            _ => await _recommendationRepository.FindAllByDiagnosisIdAsync(10),
+        };
     }
 
-    public async Task<RecommendationResponse> DeleteAsync(int id)
+    public async Task<IEnumerable<Recommendation>> ListAnxietyRecommendationsByTestScoreAsync(int score)
     {
-        try
+        return score switch
         {
-            var existingRecommendation = await _recommendationRepository.FindByIdAsync(id);
-
-            if (existingRecommendation == null)
-                return new RecommendationResponse("Recommendation not found.");
-
-            _recommendationRepository.Remove(existingRecommendation);
-            await _unitOfWork.CompleteAsync();
-            return new RecommendationResponse(existingRecommendation);
-        }
-        catch (Exception e)
-        {
-            return new RecommendationResponse($"An error occurred while deleting the recommendation: {e.Message}");
-        }
+            <= 7 => await _recommendationRepository.FindAllByDiagnosisIdAsync(6),
+            <= 15 => await _recommendationRepository.FindAllByDiagnosisIdAsync(7),
+            <= 25 => await _recommendationRepository.FindAllByDiagnosisIdAsync(8),
+            <= 63 => await _recommendationRepository.FindAllByDiagnosisIdAsync(9),
+            _ => await _recommendationRepository.FindAllByDiagnosisIdAsync(10),
+        };
     }
 }

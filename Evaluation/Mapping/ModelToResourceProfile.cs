@@ -9,9 +9,11 @@ public class ModelToResourceProfile : Profile
     public ModelToResourceProfile()
     {
         CreateMap<Assessment, AssessmentResource>();
-        CreateMap<AssessmentQuestion, AssessmentQuestionResource>();
-        CreateMap<Diagnose, DiagnoseResource>();
+        CreateMap<AssessmentRecommendation, AssessmentRecommendationResource>();
+        CreateMap<Diagnosis, DiagnosisResource>();
         CreateMap<Question, QuestionResource>();
         CreateMap<Recommendation, RecommendationResource>();
+        CreateMap<Test, TestResource>();
+        CreateMap<Treatment, TreatmentResource>();
     }
 }

@@ -39,50 +39,12 @@ public class QuestionsController : ControllerBase
         return resource;
     }
     
-    [HttpPost]
-    public async Task<IActionResult> PostAsync([FromBody] SaveQuestionResource resource)
+    [HttpGet("test/{id:int}")]
+    public async Task<IEnumerable<QuestionResource>> GetAllByTestId(int id)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState.GetErrorMessages());
-
-        var question = _mapper.Map<SaveQuestionResource, Question>(resource);
-        var result = await _questionService.SaveAsync(question);
-
-        if (!result.Success)
-            return BadRequest(result.Message);
-
-        var questionResource = _mapper.Map<Question, QuestionResource>(result.Resource);
-
-        return Ok(questionResource);
-    }
-    
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync(int id, [FromBody] SaveQuestionResource resource)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState.GetErrorMessages());
-
-        var question = _mapper.Map<SaveQuestionResource, Question>(resource);
-        var result = await _questionService.UpdateAsync(id, question);
-
-        if (!result.Success)
-            return BadRequest(result.Message);
-
-        var questionResource = _mapper.Map<Question, QuestionResource>(result.Resource);
-
-        return Ok(questionResource);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAsync(int id)
-    {
-        var result = await _questionService.DeleteAsync(id);
-
-        if (!result.Success)
-            return BadRequest(result.Message);
-
-        var questionResource = _mapper.Map<Question, QuestionResource>(result.Resource);
-
-        return Ok(questionResource);
+        var question = await _questionService.ListByTestIdAsync(id);
+        var resource = _mapper.Map<IEnumerable<Question>, IEnumerable<QuestionResource>>(question);
+        
+        return resource;
     }
 }

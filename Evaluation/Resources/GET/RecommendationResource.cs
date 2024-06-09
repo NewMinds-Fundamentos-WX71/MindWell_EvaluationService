@@ -3,9 +3,9 @@
 public class RecommendationResource
 {
     public int Id { get; set; }
-    public int Frecuency { get; set; }
+    public string Frecuency { get; set; }
     public string Category { get; set; }
-    public string Details { get; set; }
-
-    public int Diagnose_Id { get; set; }
+    public string Description { get; set; }
+    public int Lifespan { get; set; }
+    public int Diagnosis_Id { get; set; }
 }
