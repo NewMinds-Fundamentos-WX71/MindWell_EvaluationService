@@ -40,6 +40,15 @@ public class AssessmentsController : ControllerBase
         return resource;
     }
     
+    [HttpGet("patientId/{id}")]
+    public async Task<IEnumerable<AssessmentResource>> GetAllByPatientId(int id)
+    {
+        var assessments = await _assessmentService.ListByPatientIdAsync(id);
+        var resources = _mapper.Map<IEnumerable<Assessment>, IEnumerable<AssessmentResource>>(assessments);
+        
+        return resources;
+    }
+    
     [HttpPost]
     public async Task<IActionResult> PostAsync([FromBody] SaveAssessmentResource resource)
     {

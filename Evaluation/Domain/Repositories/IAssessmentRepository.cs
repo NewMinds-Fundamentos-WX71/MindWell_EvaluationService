@@ -6,6 +6,7 @@ public interface IAssessmentRepository
 {
     Task<IEnumerable<Assessment>> ListAsync();
     Task<Assessment> FindByIdAsync(int id);
+    Task<IEnumerable<Assessment>> ListByPatientIdAsync(int id);
     Task AddAsync(Assessment assessment);
     void Update(Assessment assessment);
     void Remove(Assessment assessment);

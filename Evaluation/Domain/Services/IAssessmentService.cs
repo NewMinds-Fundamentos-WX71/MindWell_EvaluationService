@@ -7,6 +7,7 @@ public interface IAssessmentService
 {
     Task<IEnumerable<Assessment>> ListAsync();
     Task<Assessment> GetByIdAsync(int id);
+    Task<IEnumerable<Assessment>> ListByPatientIdAsync(int id);
     Task<AssessmentResponse> SaveAsync(Assessment assessment);
     Task<AssessmentResponse> CalculateAnxietyDiagnosis(int id, IEnumerable<int> answers);
     Task<AssessmentResponse> CalculateDepressionDiagnosis(int id, IEnumerable<int> answers);

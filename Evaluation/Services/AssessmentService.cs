@@ -31,6 +31,11 @@ public class AssessmentService : IAssessmentService
         return await _assessmentRepository.FindByIdAsync(id);
     }
 
+    public async Task<IEnumerable<Assessment>> ListByPatientIdAsync(int id)
+    {
+        return await _assessmentRepository.ListByPatientIdAsync(id);
+    }
+
     public async Task<AssessmentResponse> SaveAsync(Assessment assessment)
     {
         try

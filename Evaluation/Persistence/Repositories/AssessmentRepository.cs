@@ -22,6 +22,13 @@ public class AssessmentRepository : BaseRepository, IAssessmentRepository
         return await _context.Assessments.FindAsync(id);
     }
 
+    public async Task<IEnumerable<Assessment>> ListByPatientIdAsync(int id)
+    {
+        return await _context.Assessments
+            .Where(x => x.User_Id == id)
+            .ToListAsync();
+    }
+
     public async Task AddAsync(Assessment assessment)
     {
         await _context.Assessments.AddAsync(assessment);
